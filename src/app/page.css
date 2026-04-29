@@ -17,6 +17,36 @@
   font-weight: 300;
 }
 
+.playful-bounce {
+  display: inline-block;
+  animation: bounce 2s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.roti-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
 .content-grid {
   display: grid;
   grid-template-columns: 1fr 350px;
@@ -92,6 +122,10 @@
 .player-name {
   font-size: 1.25rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .player-stats {
@@ -137,12 +171,104 @@
   cursor: not-allowed;
 }
 
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.action-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.action-btn-secondary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .content-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
+  .header {
+    margin-bottom: 2rem;
+    padding-top: 1rem;
+  }
+
   .title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .player-card {
+    padding: 1rem;
+  }
+
+  .player-info {
+    gap: 0.75rem;
+  }
+
+  .player-stats {
+    gap: 1rem;
+  }
+
+  .player-rank {
+    font-size: 1.25rem;
+    width: 25px;
+  }
+
+  .player-name {
+    font-size: 1.1rem;
+  }
+
+  .losses-value {
+    font-size: 1.25rem;
+  }
+
+  .action-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .player-stats {
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--glass-border);
+  }
+  
+  .losses-count {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .action-btn {
+    width: auto;
   }
 }

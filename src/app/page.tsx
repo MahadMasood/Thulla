@@ -13,7 +13,7 @@ export default async function Home() {
     <main className="container">
       <header className="header">
         <h1 className="title text-gradient">Thulla Leaderboard</h1>
-        <p className="subtitle">Track the biggest losers</p>
+        <p className="subtitle playful-bounce">Track the one jo roti khilayega 🫓💸</p>
       </header>
 
       {isMongoMissing ? (

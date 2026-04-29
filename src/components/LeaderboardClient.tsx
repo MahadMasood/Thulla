@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { recordLoss } from '@/actions/playerActions';
+import { recordLoss, decreaseLoss } from '@/actions/playerActions';
 
 type Player = {
   _id: string;
@@ -27,13 +27,22 @@ export default function LeaderboardClient({ initialPlayers }: { initialPlayers: 
     setLoadingId(null);
   }
 
+  async function handleDecrease(playerId: string) {
+    setLoadingId(playerId);
+    await decreaseLoss(playerId);
+    setLoadingId(null);
+  }
+
   return (
     <div className="leaderboard-list">
       {initialPlayers.map((player, index) => (
         <div key={player._id} className="glass-panel player-card">
           <div className="player-info">
             <div className="player-rank">#{index + 1}</div>
-            <div className="player-name">{player.name}</div>
+            <div className="player-name">
+              {player.name} 
+              {index === 0 && player.losses > 0 && <span className="roti-badge">🍕 Roti Sponsor</span>}
+            </div>
           </div>
           
           <div className="player-stats">
@@ -41,13 +50,23 @@ export default function LeaderboardClient({ initialPlayers }: { initialPlayers: 
               <div className="losses-value">{player.losses}</div>
               <div className="losses-label">Losses</div>
             </div>
-            <button 
-              className="action-btn"
-              onClick={() => handleLoss(player._id)}
-              disabled={loadingId === player._id}
-            >
-              {loadingId === player._id ? '...' : '+1 Loss'}
-            </button>
+            <div className="action-buttons">
+              <button 
+                className="action-btn-secondary"
+                onClick={() => handleDecrease(player._id)}
+                disabled={loadingId === player._id || player.losses === 0}
+                title="Decrease loss (mistake)"
+              >
+                -1
+              </button>
+              <button 
+                className="action-btn"
+                onClick={() => handleLoss(player._id)}
+                disabled={loadingId === player._id}
+              >
+                {loadingId === player._id ? '...' : '+1 Loss'}
+              </button>
+            </div>
           </div>
         </div>
       ))}

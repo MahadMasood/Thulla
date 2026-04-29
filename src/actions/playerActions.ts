@@ -57,3 +57,18 @@ export async function recordLoss(playerId: string) {
     return { success: false, error: error.message };
   }
 }
+
+export async function decreaseLoss(playerId: string) {
+  try {
+    await connectToDatabase();
+    await Player.findOneAndUpdate(
+      { _id: playerId, losses: { $gt: 0 } }, 
+      { $inc: { losses: -1 } }
+    );
+    revalidatePath('/');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error decreasing loss:', error);
+    return { success: false, error: error.message };
+  }
+}
