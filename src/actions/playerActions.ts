@@ -4,6 +4,20 @@ import { revalidatePath } from 'next/cache';
 import connectToDatabase from '@/lib/mongodb';
 import Player from '@/models/Player';
 
+function verifyPin(pin: string) {
+  const adminPin = process.env.ADMIN_PIN;
+  if (!adminPin) return true; // If no PIN is set in .env.local, allow it
+  if (pin !== adminPin) {
+    throw new Error('Incorrect PIN. You are not authorized.');
+  }
+}
+
+export async function checkPin(pin: string) {
+  const adminPin = process.env.ADMIN_PIN;
+  if (!adminPin) return true;
+  return pin === adminPin;
+}
+
 export async function getPlayers() {
   try {
     await connectToDatabase();
@@ -23,10 +37,10 @@ export async function getPlayers() {
   }
 }
 
-export async function addPlayer(formData: FormData) {
+export async function addPlayer(name: string, pin: string) {
   try {
+    verifyPin(pin);
     await connectToDatabase();
-    const name = formData.get('name') as string;
 
     if (!name || name.trim() === '') {
       return { success: false, error: 'Name is required' };
@@ -46,8 +60,9 @@ export async function addPlayer(formData: FormData) {
   }
 }
 
-export async function recordLoss(playerId: string) {
+export async function recordLoss(playerId: string, pin: string) {
   try {
+    verifyPin(pin);
     await connectToDatabase();
     await Player.findByIdAndUpdate(playerId, { $inc: { losses: 1 } });
     revalidatePath('/');
@@ -58,8 +73,9 @@ export async function recordLoss(playerId: string) {
   }
 }
 
-export async function decreaseLoss(playerId: string) {
+export async function decreaseLoss(playerId: string, pin: string) {
   try {
+    verifyPin(pin);
     await connectToDatabase();
     await Player.findOneAndUpdate(
       { _id: playerId, losses: { $gt: 0 } }, 

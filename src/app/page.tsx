@@ -1,6 +1,7 @@
 import { getPlayers } from '@/actions/playerActions';
 import LeaderboardClient from '@/components/LeaderboardClient';
 import AddPlayerForm from '@/components/AddPlayerForm';
+import LockUI from '@/components/LockUI';
 import './page.css';
 
 export default async function Home() {
@@ -11,6 +12,7 @@ export default async function Home() {
 
   return (
     <main className="container">
+      <LockUI />
       <header className="header">
         <h1 className="title text-gradient">Thulla Leaderboard</h1>
         <p className="subtitle playful-bounce">Track the one jo roti khilayega 🫓💸</p>

@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { addPlayer } from '@/actions/playerActions';
+import { usePin } from './PinProvider';
 
 export default function AddPlayerForm() {
+  const { pin, isUnlocked } = usePin();
   const [isPending, setIsPending] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -11,7 +13,8 @@ export default function AddPlayerForm() {
     setIsPending(true);
     setMessage('');
     
-    const result = await addPlayer(formData);
+    const name = formData.get('name') as string;
+    const result = await addPlayer(name, pin || '');
     
     if (result.success) {
       setMessage('Player added!');
@@ -33,13 +36,13 @@ export default function AddPlayerForm() {
           placeholder="Friend's Name" 
           className="input-field"
           required 
-          disabled={isPending}
+          disabled={isPending || !isUnlocked}
         />
       </div>
       <button 
         type="submit" 
         className="btn-primary"
-        disabled={isPending}
+        disabled={isPending || !isUnlocked}
       >
         {isPending ? 'Adding...' : 'Add Player'}
       </button>

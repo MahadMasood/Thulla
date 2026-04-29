@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { recordLoss, decreaseLoss } from '@/actions/playerActions';
+import { usePin } from './PinProvider';
 
 type Player = {
   _id: string;
@@ -10,6 +11,7 @@ type Player = {
 };
 
 export default function LeaderboardClient({ initialPlayers }: { initialPlayers: Player[] }) {
+  const { pin, isUnlocked } = usePin();
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   if (initialPlayers.length === 0) {
@@ -23,13 +25,15 @@ export default function LeaderboardClient({ initialPlayers }: { initialPlayers: 
 
   async function handleLoss(playerId: string) {
     setLoadingId(playerId);
-    await recordLoss(playerId);
+    const result = await recordLoss(playerId, pin || '');
+    if (!result.success) alert(result.error);
     setLoadingId(null);
   }
 
   async function handleDecrease(playerId: string) {
     setLoadingId(playerId);
-    await decreaseLoss(playerId);
+    const result = await decreaseLoss(playerId, pin || '');
+    if (!result.success) alert(result.error);
     setLoadingId(null);
   }
 
@@ -54,7 +58,7 @@ export default function LeaderboardClient({ initialPlayers }: { initialPlayers: 
               <button 
                 className="action-btn-secondary"
                 onClick={() => handleDecrease(player._id)}
-                disabled={loadingId === player._id || player.losses === 0}
+                disabled={loadingId === player._id || player.losses === 0 || !isUnlocked}
                 title="Decrease loss (mistake)"
               >
                 -1
@@ -62,7 +66,7 @@ export default function LeaderboardClient({ initialPlayers }: { initialPlayers: 
               <button 
                 className="action-btn"
                 onClick={() => handleLoss(player._id)}
-                disabled={loadingId === player._id}
+                disabled={loadingId === player._id || !isUnlocked}
               >
                 {loadingId === player._id ? '...' : '+1 Loss'}
               </button>
